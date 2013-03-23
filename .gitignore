@@ -1,0 +1,8 @@
+# Generated from Makefile.PL
+Makefile
+# Ignore distribution files.
+Lingua-JA-Gairaigo-/
+*.tar.gz
+# Ignore outputs of XS compilation.
+Gairaigo.c
+Gairaigo.bs
