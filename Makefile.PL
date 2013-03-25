@@ -3,7 +3,7 @@ use warnings;
 use ExtUtils::MakeMaker;
 
 my $pm = 'lib/Lingua/JA/Gairaigo/Fuzzy.pm';
-my $repo = 'https://github.com/benkasminbullock/Lingua-JA-Gairaigo';
+my $repo = 'https://github.com/benkasminbullock/Lingua-JA-Gairaigo-Fuzzy';
 
 WriteMakefile (
     NAME => 'Lingua::JA::Gairaigo::Fuzzy',
