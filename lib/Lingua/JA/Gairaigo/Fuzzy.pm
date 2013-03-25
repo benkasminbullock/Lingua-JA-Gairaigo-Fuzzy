@@ -2,11 +2,11 @@
 
 =head1 NAME
 
-Lingua::JA::Gairaigo - variant spellings of foreign words in Japanese
+Lingua::JA::Gairaigo::Fuzzy - variant spellings of foreign words in Japanese
 
 =head1 SYNOPSIS
 
-    use Lingua::JA::Gairaigo 'same_gairaigo';
+    use Lingua::JA::Gairaigo::Fuzzy 'same_gairaigo';
     my $same = same_gairaigo ('メインフレーム', 'メーンフレーム');
 
 =head1 DESCRIPTION
@@ -20,7 +20,7 @@ word.
 
 =cut
 
-package Lingua::JA::Gairaigo;
+package Lingua::JA::Gairaigo::Fuzzy;
 require Exporter;
 @ISA = qw(Exporter);
 @EXPORT_OK = qw/same_gairaigo/;

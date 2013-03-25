@@ -2,11 +2,11 @@ use strict;
 use warnings;
 use ExtUtils::MakeMaker;
 
-my $pm = 'lib/Lingua/JA/Gairaigo.pm';
+my $pm = 'lib/Lingua/JA/Gairaigo/Fuzzy.pm';
 my $repo = 'https://github.com/benkasminbullock/Lingua-JA-Gairaigo';
 
 WriteMakefile (
-    NAME => 'Lingua::JA::Gairaigo',
+    NAME => 'Lingua::JA::Gairaigo::Fuzzy',
     VERSION_FROM => $pm,
     ABSTRACT_FROM => $pm,
     AUTHOR => 'Ben Bullock <bkb@cpan.org>',

@@ -1,9 +1,9 @@
-# This is a test for module Lingua::JA::Gairaigo.
+# This is a test for module Lingua::JA::Gairaigo::Fuzzy.
 
 use warnings;
 use strict;
 use Test::More;
-use Lingua::JA::Gairaigo 'same_gairaigo';
+use Lingua::JA::Gairaigo::Fuzzy 'same_gairaigo';
 use utf8;
 
 #
