@@ -3,5 +3,6 @@ use warnings;
 use strict;
 use Perl::Build;
 perl_build (
+pod => ['lib/Lingua/JA/Gairaigo/Fuzzy.pod'],
 );
 exit;

@@ -1,0 +1,5 @@
+0.02:
+
+This release tidies up some loose ends (bad dependencies, no author
+information in pod, etc.) The important code is the same as 0.01.
+

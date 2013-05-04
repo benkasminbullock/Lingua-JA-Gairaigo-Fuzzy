@@ -1,0 +1,31 @@
+=encoding UTF-8
+
+=head1 NAME
+
+Lingua::JA::Gairaigo::Fuzzy - variant spellings of foreign words in Japanese
+
+=head1 SYNOPSIS
+
+    use Lingua::JA::Gairaigo::Fuzzy 'same_gairaigo';
+    my $same = same_gairaigo ('メインフレーム', 'メーンフレーム');
+
+=head1 DESCRIPTION
+
+Given two Japanese gairaigo words, guess whether they are the same
+word.
+
+=head1 FUNCTIONS
+
+=head2 same_gairaigo
+
+    my $same = same_gairaigo ('メイン', 'メーン');
+
+This guesses whether the two words are the same. It catches things
+like addition and removal of "ー", "・", "ッ", as well as the mixing
+of elements such as "ティ", "テー", "テイ", and "テ". If the two words
+appear to be the same, it returns a true value. If the two words
+appear not to be the same, it returns a false value.
+
+=cut
+
+[% INCLUDE "author" %]

@@ -1,25 +1,3 @@
-=encoding UTF-8
-
-=head1 NAME
-
-Lingua::JA::Gairaigo::Fuzzy - variant spellings of foreign words in Japanese
-
-=head1 SYNOPSIS
-
-    use Lingua::JA::Gairaigo::Fuzzy 'same_gairaigo';
-    my $same = same_gairaigo ('メインフレーム', 'メーンフレーム');
-
-=head1 DESCRIPTION
-
-Given two Japanese gairaigo words, guess whether they are the same
-word.
-
-=head1 FUNCTIONS
-
-=head2 same_gairaigo
-
-=cut
-
 package Lingua::JA::Gairaigo::Fuzzy;
 require Exporter;
 @ISA = qw(Exporter);
@@ -30,15 +8,12 @@ require Exporter;
 use warnings;
 use strict;
 use Carp;
-our $VERSION = 0.01;
+our $VERSION = 0.02;
 use utf8;
 
-use lib '/home/ben/projects/Text-Fuzzy/blib/lib';
-use lib '/home/ben/projects/Text-Fuzzy/blib/arch';
 use Text::Fuzzy 'fuzzy_index';
 use Lingua::JA::Moji ':all';
 
-our $verbose;# = 1;
 binmode STDOUT, ":utf8";
 
 sub same_gairaigo
@@ -53,9 +28,14 @@ sub same_gairaigo
     return undef;
 }
 
+# Check a few likely things
+
 sub usual_suspect
 {
     my ($kana, $n) = @_;
+
+    # The following is an undocumented routine in Text::Fuzzy.
+
     my ($dist, $edits) = fuzzy_index ($kana, $n, 1);
 
     # Is this a likely candidate?
@@ -64,8 +44,8 @@ sub usual_suspect
 
     if ($edits =~ /ii|dd|rr/) {
 
-	# Double delete, double insertion, double replace means this
-	# is unlikely to be the same word.
+	# A double delete, double insertion, or double replace means
+	# this is unlikely to be the same word.
 
 	return;
     }
@@ -73,14 +53,14 @@ sub usual_suspect
     my @nkana = split //, $n;
     my @edits = split //, $edits;
 
-    # $i is the offset in @kana, and $j is the offset in @nkana.
+    # $i is the offset in @kana, and $j is the offset in @nkana. Note
+    # that @kana and @nkana may have different lengths and the offsets
+    # are adjusted as we look though what edit is necessary to change
+    # "$kana" to "$n".
 
     my $i = 0;
     my $j = 0;
 
-    if ($verbose) {
-	print "$kana -> $n via $edits\n";
-    }
     for my $edit (@edits) {
 
 	if ($edit eq 'r') {
@@ -90,7 +70,6 @@ sub usual_suspect
 	    my $k = $kana[$i];
 	    my $q = $nkana[$j];
 	    if ($k =~ /[ーィイ]/ && $q =~ /[ーィイ]/) {
-		my $prev;
 
 		# Check whether the previous kana ends in "e", so it
 		# is something like "ヘイ" and "ヘー".
@@ -98,24 +77,32 @@ sub usual_suspect
 		if (ends_in_e (\@kana, $i)) {
 		    $gotcha = 1;
 		}
-		else {
-		    if ($verbose) {
-			print "No e for you.\n";
-		    }
-		}
 	    }
 	    if ($k =~ /ーッ/ && $q =~ /ーッ/) {
+
+		# A chouon has been replaced with a sokuon, or
+		# vice-versa.
+
 		$gotcha = 1;
 	    }
+
+	    # Whatever we had, increment $i and $j equally because a
+	    # character was replaced.
+
 	    $i++;
 	    $j++;
 	}
 	elsif ($edit eq 'd') {
 
-	    # Delete $k from $kana to get $n.
+	    # Character $k was deleted from $kana to get $n, so we
+	    # just increment $i.
 
 	    my $k = $kana[$i];
 	    if ($k eq 'ー' || $k eq '・' || $k eq 'ッ') {
+
+		# A chouon, nakaguro, or sokuon was deleted from $kana
+		# to get $n.
+
 		$gotcha = 1;
 	    }
 	    my $q = $kana[$j];
@@ -128,17 +115,23 @@ sub usual_suspect
 	}
 	elsif ($edit eq 'i') {
 
-	    # Character $k was inserted into $n.
+	    # Character $k was inserted into $n, so we just increment
+	    # $j, not $i.
 
 	    my $k = $nkana[$j];
 	    if ($k eq 'ー' || $k eq '・' || $k eq 'ッ') {
+
+		# A chouon, nakaguro, or sokuon was inserted into
+		# $kana to get $n.
+
 		$gotcha = 1;
 	    }
 	    $j++;
 	}
 	elsif ($edit eq 'k') {
 
-	    # The two strings are the same at this point.
+	    # The two strings are the same at this point, so do not do
+	    # any checking but just increment the offsets.
 
 	    $i++;
 	    $j++;
@@ -156,6 +149,8 @@ sub usual_suspect
     return $gotcha;
 }
 
+# Work out whether the kana before the one at $i ends in "e".
+
 sub ends_in_e
 {
     my ($kana_ref, $i) = @_;
@@ -167,13 +162,12 @@ sub ends_in_e
 	    return 1;
 	}
     }
-    else {
-	if ($verbose) {
-	    print "$i no goog\n";
-	}
-    }
     return undef;
 }
+
+# Work out whether $x and $y differ in the ways we expect.
+
+# The name "chouon" is a misnomer.
 
 sub chouon
 {
@@ -183,19 +177,19 @@ sub chouon
     my $found;
     my $mismatch = check (\%xa, \%ya, \$found);
     if ($mismatch) {
-#	print "Mismatch $x / $y: $mismatch\n";
-	return undef 
+	return undef;
     }
     $mismatch = check (\%ya, \%xa, \$found);
     if ($mismatch) {
-#	print "Mismatch $x / $y: $mismatch\n";
-	return undef 
+	return undef;
     }
     if ($found) {
 	return 1;
     }
     return undef;
 }
+
+# Given a word $x, make an alphabet of its consituent letters.
 
 sub alph
 {
@@ -206,6 +200,9 @@ sub alph
     return %xa;
 }
 
+# Go through the keys of $ya, and check whether the keys which are not
+# in $xa are the right kind of keys.
+
 sub check
 {
     my ($xa, $ya, $found) = @_;
@@ -213,15 +210,12 @@ sub check
     for my $k (keys %$ya) {
 	next if $xa->{$k};
 	if ($k eq 'ー' || $k eq 'イ' || $k eq 'ィ' || $k eq '・' || $k eq 'ッ') {
-#	    print "boo to a goose.\n";
 	    $ok = 1;
 	    next;
 	}
-#	print "Return $k\n";
 	return $k;
     }
     if ($ok) {
-#	print "OK.\n";
 	$$found = $ok;
     }
     return;
