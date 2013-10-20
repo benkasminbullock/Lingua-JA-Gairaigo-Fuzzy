@@ -60,6 +60,15 @@ ok (! same_gairaigo ('プリン', 'プリンタ'));
 
 ok (same_gairaigo ('バープス', 'バープス'), "バープス/バープス");
 
+ok (same_gairaigo ('ヤッピー', 'ヤッピイ'), "i + chouon == ii");
+ok (same_gairaigo ('ヨーク', 'ヨウク'), "ヨーク / ヨウク");
+ok (same_gairaigo ('ヨー', 'ヨウ'));
+
+TODO: {
+    local $TODO='known bugs';
+};
+
+
 done_testing ();
 
 # Local variables:

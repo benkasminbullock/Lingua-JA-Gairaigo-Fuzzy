@@ -8,7 +8,7 @@ require Exporter;
 use warnings;
 use strict;
 use Carp;
-our $VERSION = 0.03;
+our $VERSION = 0.04;
 use utf8;
 
 use Text::Fuzzy 'fuzzy_index';
@@ -50,6 +50,7 @@ sub usual_suspect
 	# A double delete, double insertion, or double replace means
 	# this is unlikely to be the same word.
 
+	print "no go joe\n";
 	return;
     }
     my @kana = split //, $kana;
@@ -68,6 +69,7 @@ sub usual_suspect
 
 	if ($edit eq 'r') {
 
+
 	    # Replaced $k with $q.
 
 	    my $k = $kana[$i];
@@ -80,6 +82,12 @@ sub usual_suspect
 		if (ends_in_e (\@kana, $i)) {
 		    $gotcha = 1;
 		}
+		if (($k eq 'ー' && $q eq 'イ') ||
+		    ($q eq 'ー' && $k eq 'イ')) {
+		    if (ends_in_i (\@kana, $i)) {
+			$gotcha = 1;
+		    }
+		}
 	    }
 	    if ($k =~ /[ーッ]/ && $q =~ /[ーッ]/) {
 
@@ -87,6 +95,12 @@ sub usual_suspect
 		# vice-versa.
 
 		$gotcha = 1;
+	    }
+	    if (($k eq 'ー' && $q eq 'ウ') ||
+		($q eq 'ー' && $k eq 'ウ')) {
+		if (ends_in_ou (\@kana, $i)) {
+		    $gotcha = 1;
+		}
 	    }
 
 	    # Whatever we had, increment $i and $j equally because a
@@ -168,6 +182,36 @@ sub ends_in_e
     return undef;
 }
 
+# Work out whether the kana before the one at $i ends in "e".
+
+sub ends_in_ou
+{
+    my ($kana_ref, $i) = @_;
+    my $prev;
+    if ($i >= 1) {
+	$prev = $kana_ref->[$i - 1];
+	$prev = kana2romaji ($prev);
+	if ($prev =~ /[ou]$/) {
+	    return 1;
+	}
+    }
+    return undef;
+}
+# Work out whether the kana before the one at $i ends in "e".
+
+sub ends_in_i
+{
+    my ($kana_ref, $i) = @_;
+    my $prev;
+    if ($i >= 1) {
+	$prev = $kana_ref->[$i - 1];
+	$prev = kana2romaji ($prev);
+	if ($prev =~ /i$/) {
+	    return 1;
+	}
+    }
+    return undef;
+}
 # Work out whether $x and $y differ in the ways we expect.
 
 # The name "chouon" is a misnomer.
@@ -212,7 +256,12 @@ sub check
     my $ok;
     for my $k (keys %$ya) {
 	next if $xa->{$k};
-	if ($k eq 'ー' || $k eq 'イ' || $k eq 'ィ' || $k eq '・' || $k eq 'ッ') {
+	if ($k eq 'ー' ||
+	    $k eq 'イ' ||
+	    $k eq 'ィ' ||
+	    $k eq '・' ||
+	    $k eq 'ッ' || 
+	    $k eq 'ウ') {
 	    $ok = 1;
 	    next;
 	}
