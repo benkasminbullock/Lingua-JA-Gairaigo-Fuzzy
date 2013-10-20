@@ -71,7 +71,6 @@ ok (same_gairaigo ('バープス', 'バープス'), "バープス/バープス")
 
 TODO: {
     local $TODO='known bugs';
-    ok (! $@);
 };
 
 
