@@ -8,7 +8,7 @@ require Exporter;
 use warnings;
 use strict;
 use Carp;
-our $VERSION = 0.04;
+our $VERSION = 0.05;
 use utf8;
 
 use Text::Fuzzy 'fuzzy_index';
