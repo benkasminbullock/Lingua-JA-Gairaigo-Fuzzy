@@ -1,5 +1,10 @@
 Revision history for perl module Lingua::JA::Gairaigo::Fuzzy
 
+0.04 2013-10-20
+
+* ou and o- now the same.
+* ii and i- now the same.
+
 0.03 2013-10-20
 
 * Add 'eq' to "same_gairaigo", return 1 if true.
