@@ -18,12 +18,12 @@ binmode STDOUT, ":utf8";
 
 sub same_gairaigo
 {
-    my ($kana, $n) = @_;
+    my ($kana, $n, $debug) = @_;
     if ($kana eq $n) {
 	return 1;
     }
     if (chouon ($kana, $n)) {
-	my $gotcha = usual_suspect ($kana, $n);
+	my $gotcha = usual_suspect ($kana, $n, $debug);
 	if ($gotcha) {
 	    return 1;
 	}
@@ -35,7 +35,7 @@ sub same_gairaigo
 
 sub usual_suspect
 {
-    my ($kana, $n) = @_;
+    my ($kana, $n, $debug) = @_;
 
     # The following is an undocumented routine in Text::Fuzzy.
 
@@ -50,13 +50,15 @@ sub usual_suspect
 	# A double delete, double insertion, or double replace means
 	# this is unlikely to be the same word.
 
-	print "no go joe\n";
 	return;
     }
     my @kana = split //, $kana;
     my @nkana = split //, $n;
     my @edits = split //, $edits;
 
+    if ($debug) {
+	printf ("%d %d\n", scalar (@kana), scalar (@nkana));
+    }
     # $i is the offset in @kana, and $j is the offset in @nkana. Note
     # that @kana and @nkana may have different lengths and the offsets
     # are adjusted as we look though what edit is necessary to change
@@ -67,13 +69,18 @@ sub usual_suspect
 
     for my $edit (@edits) {
 
+	if ($debug) {
+	    print "i = $i, j = $j, edit = $edit\n";
+	}
 	if ($edit eq 'r') {
-
 
 	    # Replaced $k with $q.
 
 	    my $k = $kana[$i];
 	    my $q = $nkana[$j];
+	    if ($debug) {
+		print "Replace $k with $q\n";
+	    }
 	    if ($k =~ /[ーィイ]/ && $q =~ /[ーィイ]/) {
 
 		# Check whether the previous kana ends in "e", so it
@@ -122,10 +129,16 @@ sub usual_suspect
 
 		$gotcha = 1;
 	    }
-	    my $q = $kana[$j];
-	    if ($q =~ /[ーィイ]/) {
-		if (ends_in_e (\@kana, $i)) {
-		    $gotcha = 1;
+	    # Check we are not at the end of the string.
+	    if ($j < scalar (@kana)) {
+		my $q = $kana[$j];
+		if (! defined $q) {
+		    warn "baba";
+		}
+		if ($q =~ /[ーィイ]/) {
+		    if (ends_in_e (\@kana, $i)) {
+			$gotcha = 1;
+		    }
 		}
 	    }
 	    $i++;
