@@ -6,6 +6,13 @@ use Test::More;
 use Lingua::JA::Gairaigo::Fuzzy 'same_gairaigo';
 use utf8;
 
+binmode STDOUT, ":utf8";
+my $builder = Test::More->builder;
+binmode $builder->output,         ":utf8";
+binmode $builder->failure_output, ":utf8";
+binmode $builder->todo_output,    ":utf8";
+
+
 #
 #  ____           _ _   _                
 # |  _ \ ___  ___(_) |_(_)_   _____  ___ 
@@ -33,6 +40,10 @@ ok (same_gairaigo ('ジャーマン・シェパード', 'ジャーマンシェ�
 
 ok (same_gairaigo ('ローンダリング', 'ロンダリング'));
 
+# Fake test (do not have a real example).
+
+ok (same_gairaigo ('ハート', 'ハット'), "ハート/ハット");
+
 #
 #  _   _                  _   _                
 # | \ | | ___  __ _  __ _| |_(_)_   _____  ___ 
@@ -46,6 +57,8 @@ ok (same_gairaigo ('ローンダリング', 'ロンダリング'));
 
 ok (! same_gairaigo ('メインフレーム', 'フレームメーン'));
 ok (! same_gairaigo ('プリン', 'プリンタ'));
+
+ok (same_gairaigo ('バープス', 'バープス'), "バープス/バープス");
 
 done_testing ();
 

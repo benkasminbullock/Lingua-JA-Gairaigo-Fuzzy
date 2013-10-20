@@ -8,7 +8,7 @@ require Exporter;
 use warnings;
 use strict;
 use Carp;
-our $VERSION = 0.02;
+our $VERSION = 0.03;
 use utf8;
 
 use Text::Fuzzy 'fuzzy_index';
@@ -19,6 +19,9 @@ binmode STDOUT, ":utf8";
 sub same_gairaigo
 {
     my ($kana, $n) = @_;
+    if ($kana eq $n) {
+	return 1;
+    }
     if (chouon ($kana, $n)) {
 	my $gotcha = usual_suspect ($kana, $n);
 	if ($gotcha) {
@@ -78,7 +81,7 @@ sub usual_suspect
 		    $gotcha = 1;
 		}
 	    }
-	    if ($k =~ /ーッ/ && $q =~ /ーッ/) {
+	    if ($k =~ /[ーッ]/ && $q =~ /[ーッ]/) {
 
 		# A chouon has been replaced with a sokuon, or
 		# vice-versa.

@@ -1,5 +1,14 @@
-0.02:
+Revision history for perl module Lingua::JA::Gairaigo::Fuzzy
 
-This release tidies up some loose ends (bad dependencies, no author
-information in pod, etc.) The important code is the same as 0.01.
+0.03 2013-10-20
+
+* Add 'eq' to "same_gairaigo", return 1 if true.
+
+0.02 2013-05-04
+
+* This release tidies up some loose ends (bad dependencies, no author
+  information in pod, etc.) The important code is the same as 0.01.
+
+0.01 2013-03-25
+
 
