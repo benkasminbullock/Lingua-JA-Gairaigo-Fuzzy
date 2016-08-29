@@ -1,5 +1,9 @@
 Revision history for perl module Lingua::JA::Gairaigo::Fuzzy
 
+0.06 2014-02-05
+
+Add README, MIN_PERL_VERSION in Makefile.PL.
+
 0.05 2013-10-20
 
 * Bug fixes

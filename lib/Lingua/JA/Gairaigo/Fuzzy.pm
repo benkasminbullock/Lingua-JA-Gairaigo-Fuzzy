@@ -8,13 +8,11 @@ require Exporter;
 use warnings;
 use strict;
 use Carp;
-our $VERSION = 0.05;
+our $VERSION = '0.06';
 use utf8;
 
 use Text::Fuzzy 'fuzzy_index';
 use Lingua::JA::Moji ':all';
-
-binmode STDOUT, ":utf8";
 
 sub same_gairaigo
 {
@@ -59,6 +57,7 @@ sub usual_suspect
     if ($debug) {
 	printf ("%d %d\n", scalar (@kana), scalar (@nkana));
     }
+
     # $i is the offset in @kana, and $j is the offset in @nkana. Note
     # that @kana and @nkana may have different lengths and the offsets
     # are adjusted as we look though what edit is necessary to change
@@ -132,9 +131,6 @@ sub usual_suspect
 	    # Check we are not at the end of the string.
 	    if ($j < scalar (@kana)) {
 		my $q = $kana[$j];
-		if (! defined $q) {
-		    warn "baba";
-		}
 		if ($q =~ /[ーィイ]/) {
 		    if (ends_in_e (\@kana, $i)) {
 			$gotcha = 1;
@@ -171,10 +167,10 @@ sub usual_suspect
     # Check we did not make a mistake scanning the two strings.
 
     if ($i != scalar @kana) {
-	print "Mismatch $i\n";
+	warn "Bug: Mismatch $i";
     }
     if ($j != scalar @nkana) {
-	print "Mismatch $j\n";
+	warn "Bug: Mismatch $j";
     }
     return $gotcha;
 }
@@ -195,7 +191,7 @@ sub ends_in_e
     return undef;
 }
 
-# Work out whether the kana before the one at $i ends in "e".
+# Work out whether the kana before the one at $i ends in "ou".
 
 sub ends_in_ou
 {

@@ -1,8 +1,12 @@
 # Generated from Makefile.PL
 Makefile
-# Ignore distribution files.
-Lingua-JA-Gairaigo-/
-*.tar.gz
 # Ignore outputs of XS compilation.
 Gairaigo.c
 Gairaigo.bs
+# Generated files
+MANIFEST
+README
+lib/Lingua/JA/Gairaigo/Fuzzy.pod
+# Ignore distribution files.
+Lingua-JA-Gairaigo-Fuzzy-[0-9]*
+*.tar.gz
