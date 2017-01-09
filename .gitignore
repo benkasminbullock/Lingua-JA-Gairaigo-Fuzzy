@@ -10,3 +10,4 @@ lib/Lingua/JA/Gairaigo/Fuzzy.pod
 # Ignore distribution files.
 Lingua-JA-Gairaigo-Fuzzy-[0-9]*
 *.tar.gz
+examples/*-out.txt

@@ -1,18 +1,17 @@
 package Lingua::JA::Gairaigo::Fuzzy;
-require Exporter;
-@ISA = qw(Exporter);
-@EXPORT_OK = qw/same_gairaigo/;
-%EXPORT_TAGS = (
-    all => \@EXPORT_OK,
-);
 use warnings;
 use strict;
-use Carp;
-our $VERSION = '0.06';
+require Exporter;
+our @ISA = qw(Exporter);
+our @EXPORT_OK = qw/same_gairaigo/;
+our %EXPORT_TAGS = (
+    all => \@EXPORT_OK,
+);
+our $VERSION = '0.07';
 use utf8;
 
 use Text::Fuzzy 'fuzzy_index';
-use Lingua::JA::Moji ':all';
+use Lingua::JA::Moji 'kana2romaji';
 
 sub same_gairaigo
 {
@@ -48,14 +47,18 @@ sub usual_suspect
 	# A double delete, double insertion, or double replace means
 	# this is unlikely to be the same word.
 
-	return;
+	if ($debug) {
+	    print "$kana has double delete, insert, or replace; rejecting.\n";
+	}
+
+	return undef;
     }
     my @kana = split //, $kana;
     my @nkana = split //, $n;
     my @edits = split //, $edits;
 
     if ($debug) {
-	printf ("%d %d\n", scalar (@kana), scalar (@nkana));
+	printf ("Lengths of a and b: %d %d\n", scalar (@kana), scalar (@nkana));
     }
 
     # $i is the offset in @kana, and $j is the offset in @nkana. Note
@@ -69,7 +72,7 @@ sub usual_suspect
     for my $edit (@edits) {
 
 	if ($debug) {
-	    print "i = $i, j = $j, edit = $edit\n";
+	    print "Offsets i = $i, j = $j, edit = $edit\n";
 	}
 	if ($edit eq 'r') {
 
